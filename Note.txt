@@ -1,0 +1,482 @@
+Examples
+React
+Scroll-triggered animations
+
+Source
+
+🍅
+🍊
+🍋
+🍐
+🍏
+🫐
+🍆
+🍇
+Source
+Close
+Component
+Tests
+import * as motion from "motion/react-client"
+import type { Variants } from "motion/react"
+
+export default function ScrollTriggered() {
+    return (
+        <div style={container}>
+            {food.map(([emoji, hueA, hueB], i) => (
+                <Card i={i} emoji={emoji} hueA={hueA} hueB={hueB} key={emoji} />
+            ))}
+        </div>
+    )
+}
+
+interface CardProps {
+    emoji: string
+    hueA: number
+    hueB: number
+    i: number
+}
+
+function Card({ emoji, hueA, hueB, i }: CardProps) {
+    const background = `linear-gradient(306deg, ${hue(hueA)}, ${hue(hueB)})`
+
+    return (
+        <motion.div
+            className={`card-container-${i}`}
+            style={cardContainer}
+            initial="offscreen"
+            whileInView="onscreen"
+            viewport={{ amount: 0.8 }}
+        >
+            <div style={{ ...splash, background }} />
+            <motion.div style={card} variants={cardVariants} className="card">
+                {emoji}
+            </motion.div>
+        </motion.div>
+    )
+}
+
+const cardVariants: Variants = {
+    offscreen: {
+        y: 300,
+    },
+    onscreen: {
+        y: 50,
+        rotate: -10,
+        transition: {
+            type: "spring",
+            bounce: 0.4,
+            duration: 0.8,
+        },
+    },
+}
+
+const hue = (h: number) => `hsl(${h}, 100%, 50%)`
+
+/**
+ * ==============   Styles   ================
+ */
+
+const container: React.CSSProperties = {
+    margin: "100px auto",
+    maxWidth: 500,
+    paddingBottom: 100,
+    width: "100%",
+}
+
+const cardContainer: React.CSSProperties = {
+    overflow: "hidden",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    paddingTop: 20,
+    marginBottom: -120,
+}
+
+const splash: React.CSSProperties = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    clipPath: `path("M 0 303.5 C 0 292.454 8.995 285.101 20 283.5 L 460 219.5 C 470.085 218.033 480 228.454 480 239.5 L 500 430 C 500 441.046 491.046 450 480 450 L 20 450 C 8.954 450 0 441.046 0 430 Z")`,
+}
+
+const card: React.CSSProperties = {
+    fontSize: 164,
+    width: 300,
+    height: 430,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    background: "#f5f5f5",
+    boxShadow:
+        "0 0 1px hsl(0deg 0% 0% / 0.075), 0 0 2px hsl(0deg 0% 0% / 0.075), 0 0 4px hsl(0deg 0% 0% / 0.075), 0 0 8px hsl(0deg 0% 0% / 0.075), 0 0 16px hsl(0deg 0% 0% / 0.075)",
+    transformOrigin: "10% 60%",
+}
+
+/**
+ * ==============   Data   ================
+ */
+
+const food: [string, number, number][] = [
+    ["🍅", 340, 10],
+    ["🍊", 20, 40],
+    ["🍋", 60, 90],
+    ["🍐", 80, 120],
+    ["🍏", 100, 140],
+    ["🫐", 205, 245],
+    ["🍆", 260, 290],
+    ["🍇", 290, 320],
+]
+
+Open in
+Copy
+Prev
+Next
+
+
+power button
+
+
+
+
+
+
+
+import * as motion from "motion/react-client"
+import { useState } from "react"
+
+export default function LayoutAnimation() {
+    const [isOn, setIsOn] = useState(false)
+
+    const toggleSwitch = () => setIsOn(!isOn)
+
+    return (
+        <button
+            className="toggle-container"
+            style={{
+                ...container,
+                justifyContent: "flex-" + (isOn ? "start" : "end"),
+            }}
+            onClick={toggleSwitch}
+        >
+            <motion.div
+                className="toggle-handle"
+                style={handle}
+                layout
+                transition={{
+                    type: "spring",
+                    visualDuration: 0.2,
+                    bounce: 0.2,
+                }}
+            />
+        </button>
+    )
+}
+
+/**
+ * ==============   Styles   ================
+ */
+
+const container = {
+    width: 100,
+    height: 50,
+    backgroundColor: "var(--hue-3-transparent)",
+    borderRadius: 50,
+    cursor: "pointer",
+    display: "flex",
+    padding: 10,
+}
+
+const handle = {
+    width: 50,
+    height: 50,
+    backgroundColor: "#9911ff",
+    borderRadius: "50%",
+}
+
+
+
+
+
+
+
+carousel 
+
+import {
+    motion,
+    MotionValue,
+    useScroll,
+    useSpring,
+    useTransform,
+} from "motion/react"
+import { useRef } from "react"
+
+function useParallax(value: MotionValue<number>, distance: number) {
+    return useTransform(value, [0, 1], [-distance, distance])
+}
+
+function Image({ id }: { id: number }) {
+    const ref = useRef(null)
+    const { scrollYProgress } = useScroll({ target: ref })
+    const y = useParallax(scrollYProgress, 300)
+
+    return (
+        <section className="img-container">
+            <div ref={ref}>
+                <img
+                    src={`/photos/cityscape/${id}.jpg`}
+                    alt="A London skyscraper"
+                />
+            </div>
+            <motion.h2
+                // Hide until scroll progress is measured
+                initial={{ visibility: "hidden" }}
+                animate={{ visibility: "visible" }}
+                style={{ y }}
+            >{`#00${id}`}</motion.h2>
+        </section>
+    )
+}
+
+export default function Parallax() {
+    const { scrollYProgress } = useScroll()
+    const scaleX = useSpring(scrollYProgress, {
+        stiffness: 100,
+        damping: 30,
+        restDelta: 0.001,
+    })
+
+    return (
+        <div id="example">
+            {[1, 2, 3, 4, 5].map((image) => (
+                <Image key={image} id={image} />
+            ))}
+            <motion.div className="progress" style={{ scaleX }} />
+            <StyleSheet />
+        </div>
+    )
+}
+
+/**
+ * ==============   Styles   ================
+ */
+
+function StyleSheet() {
+    return (
+        <style>{`
+         html {
+            scroll-snap-type: y mandatory;
+        }
+
+        .img-container {
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .img-container > div {
+            width: 300px;
+            height: 400px;
+            margin: 20px;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+
+        .img-container img {
+            width: 300px;
+            height: 400px;
+        }
+
+        @media (max-width: 500px) {
+            .img-container > div {
+                width: 150px;
+                height: 200px;
+            }
+
+            .img-container img {
+                width: 150px;
+                height: 200px;
+            }
+        }
+
+        .img-container h2 {
+            color: #4ff0b7;
+            margin: 0;
+            font-family: JetBrains Mono, monospace;
+            font-size: 50px;
+            font-weight: 700;
+            letter-spacing: -3px;
+            line-height: 1.2;
+            position: absolute;
+            display: inline-block;
+            top: calc(50% - 25px);
+            left: calc(50% + 120px);
+        }
+
+        .progress {
+            position: fixed;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: #4ff0b7;
+            bottom: 50px;
+            transform: scaleX(0);
+        }
+    `}</style>
+    )
+}
+
+
+youtube carousel
+
+import {
+    animate,
+    motion,
+    MotionValue,
+    useMotionValue,
+    useMotionValueEvent,
+    useScroll,
+} from "motion/react"
+import { useRef } from "react"
+
+export default function ScrollLinked() {
+    const ref = useRef(null)
+    const { scrollXProgress } = useScroll({ container: ref })
+    const maskImage = useScrollOverflowMask(scrollXProgress)
+
+    return (
+        <div id="example">
+            <svg id="progress" width="80" height="80" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="30" pathLength="1" className="bg" />
+                <motion.circle
+                    cx="50"
+                    cy="50"
+                    r="30"
+                    className="indicator"
+                    style={{ pathLength: scrollXProgress }}
+                />
+            </svg>
+            <motion.ul ref={ref} style={{ maskImage }}>
+                <li style={{ background: "#ff0088" }}></li>
+                <li style={{ background: "#dd00ee" }}></li>
+                <li style={{ background: "#9911ff" }}></li>
+                <li style={{ background: "#0d63f8" }}></li>
+                <li style={{ background: "#0cdcf7" }}></li>
+                <li style={{ background: "#4ff0b7" }}></li>
+            </motion.ul>
+            <StyleSheet />
+        </div>
+    )
+}
+
+const left = `0%`
+const right = `100%`
+const leftInset = `20%`
+const rightInset = `80%`
+const transparent = `#0000`
+const opaque = `#000`
+function useScrollOverflowMask(scrollXProgress: MotionValue<number>) {
+    const maskImage = useMotionValue(
+        `linear-gradient(90deg, ${opaque}, ${opaque} ${left}, ${opaque} ${rightInset}, ${transparent})`
+    )
+
+    useMotionValueEvent(scrollXProgress, "change", (value) => {
+        if (value === 0) {
+            animate(
+                maskImage,
+                `linear-gradient(90deg, ${opaque}, ${opaque} ${left}, ${opaque} ${rightInset}, ${transparent})`
+            )
+        } else if (value === 1) {
+            animate(
+                maskImage,
+                `linear-gradient(90deg, ${transparent}, ${opaque} ${leftInset}, ${opaque} ${right}, ${opaque})`
+            )
+        } else if (
+            scrollXProgress.getPrevious() === 0 ||
+            scrollXProgress.getPrevious() === 1
+        ) {
+            animate(
+                maskImage,
+                `linear-gradient(90deg, ${transparent}, ${opaque} ${leftInset}, ${opaque} ${rightInset}, ${transparent})`
+            )
+        }
+    })
+
+    return maskImage
+}
+
+/**
+ * ==============   Styles   ================
+ */
+
+function StyleSheet() {
+    return (
+        <style>{`
+            #example {
+              width: 100vw;
+              max-width: 400px;
+              position: relative;
+            }
+
+            #example #progress {
+                position: absolute;
+                top: -65px;
+                left: -15px;
+                transform: rotate(-90deg);
+            }
+
+            #example .bg {
+                stroke: var(--layer);
+            }
+
+            #example #progress circle {
+                stroke-dashoffset: 0;
+                stroke-width: 10%;
+                fill: none;
+            }
+
+            #progress .indicator {
+                stroke: var(--accent);
+            }
+
+            #example ul {
+                display: flex;
+                list-style: none;
+                height: 220px;
+                overflow-x: scroll;
+                padding: 20px 0;
+                flex: 0 0 600px;
+                margin: 0 auto;
+                gap: 20px;
+            }
+
+            #example ::-webkit-scrollbar {
+                height: 5px;
+                width: 5px;
+                background: #fff3;
+                -webkit-border-radius: 1ex;
+            }
+
+            #example ::-webkit-scrollbar-thumb {
+                background: var(--accent);
+                -webkit-border-radius: 1ex;
+            }
+
+            #example ::-webkit-scrollbar-corner {
+                background: #fff3;
+            }
+
+            #example li {
+                flex: 0 0 200px;
+                background: var(--accent);
+            }
+
+    `}</style>
+    )
+}

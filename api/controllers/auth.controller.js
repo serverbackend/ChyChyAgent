@@ -15,6 +15,7 @@ export const signup = async (req, res, next) => {
       throw new CustomError("User already exists", 400);
     }
 
+    // the image to check for correct image url
     let cloudinaryResponse = null;
     if (image) {
       cloudinaryResponse = await cloudinary.uploader.upload(image, {
