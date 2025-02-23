@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const Header = ({ darkMode }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -9,11 +10,11 @@ const Header = ({ darkMode }) => {
   };
   return (
     <div
-      className={`py-4 px-4 h-16 w-full border-b z-40 border-stone-400 flex justify-between items-center sticky top-0 ${
+      className={`py-4 px-4 max-h-16 w-full border-b z-40 border-stone-400 flex justify-between items-center sticky top-0 ${
         darkMode ? "bg-gray-900 text-gray-300" : "bg-white text-gray-800"
       }`}
     >
-      <span>Admin Dashboard</span>
+      <div>Admin Dashboard</div>
       <div className="relative">
         <img
           src="https://t3.ftcdn.net/jpg/06/33/54/78/360_F_633547842_AugYzexTpMJ9z1YcpTKUBoqBF0CUCk10.jpg"
@@ -27,15 +28,27 @@ const Header = ({ darkMode }) => {
               darkMode ? "bg-gray-900 text-gray-300" : "bg-white text-gray-800"
             }`}
           >
-            <li className="p-2 hover:bg-gray-100 cursor-pointer">
-              <Link to={"/admin/profile"}>Profile</Link>
-            </li>
-            <li className="p-2 hover:bg-gray-100 cursor-pointer">Sign Out</li>
+            <Link
+              className="p-2 block hover:bg-gray-100 cursor-pointer"
+              to={"/admin/profile/1"}
+            >
+              Profile
+            </Link>
+
+            <Link
+              to={"/admin/login"}
+              className="p-2 block hover:bg-gray-100 cursor-pointer"
+            >
+              Sign Out
+            </Link>
           </ul>
         )}
       </div>
     </div>
   );
+};
+Header.propTypes = {
+  darkMode: PropTypes.bool.isRequired,
 };
 
 export default Header;

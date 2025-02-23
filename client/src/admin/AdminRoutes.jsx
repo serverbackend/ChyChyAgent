@@ -7,8 +7,12 @@ import Login from "./pages/Login";
 import Sidebar from "./components/SideBar";
 import { Navigate } from "react-router-dom";
 import AdminNotFound from "./pages/AdminNotFound";
-import Ledger from "./pages/Ledger";
 import Header from "./components/Header";
+import ComingSoon from "./components/ComingSoon";
+import CreateBlog from "./pages/CreateBlog";
+import BlogList from "./pages/BlogList";
+import AiBlog from "./pages/AiBlog";
+import AdminProfile from "./pages/AdminProfile";
 
 const AdminRoutes = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true); // For demo purposes
@@ -26,7 +30,7 @@ const AdminRoutes = () => {
   };
   return (
     <>
-      <div className="flex">
+      <div className="flex w-full h-full">
         {!hideSidebar && (
           <Sidebar
             setDarkMode={setDarkMode}
@@ -34,7 +38,7 @@ const AdminRoutes = () => {
             toggleDarkMode={toggleDarkMode}
           />
         )}
-        <div className="w-full flex-grow ">
+        <div className="w-full h-full">
           <Header darkMode={darkMode} />
           <Routes>
             {/* Public Admin Routes */}
@@ -57,11 +61,15 @@ const AdminRoutes = () => {
                 path="dashboard"
                 element={<Dashboard darkMode={darkMode} />}
               />
-              <Route path="ledger" element={<Ledger />} />
-              <Route path="listing/:id" element={<Ledger />} />
-              <Route path="create-blog" element={<Ledger />} />
-              <Route path="blog-list" element={<Ledger />} />
-              <Route path="profile/:id" element={<Ledger />} />
+              <Route path="ledger" element={<ComingSoon />} />
+              <Route path="listing/:id" element={<ComingSoon />} />
+              <Route path="appointment" element={<ComingSoon />} />
+              <Route path="customer" element={<ComingSoon />} />
+              <Route path="listing/:id" element={<ComingSoon />} />
+              <Route path="create-blog" element={<CreateBlog />} />
+              <Route path="blog-list" element={<BlogList />} />
+              <Route path="use-AI" element={<AiBlog />} />
+              <Route path="profile/:id" element={<AdminProfile />} />
             </Route>
             {/* Admin Not Found Route */}
             <Route path="*" element={<AdminNotFound />} />

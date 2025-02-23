@@ -29,3 +29,26 @@ export const yearlyData = [
   { date: "Nov", external: 9700 },
   { date: "Dec", external: 10200 },
 ];
+
+export const pieData = [
+  { name: "Real Estate", value: 50 },
+  { name: "Life", value: 30 },
+  { name: "Insurance", value: 20 },
+];
+
+export const pieCOLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+
+export const blogs = [
+  {
+    title: "The Future of Real Estate",
+    category: "Real Estate",
+    date: "2025-02-20",
+  },
+  {
+    title: "Life Insurance Explained",
+    category: "Insurance",
+    date: "2025-02-18",
+  },
+  { title: "Home Buying Guide", category: "Real Estate", date: "2025-02-15" },
+  { title: "Financial Security Tips", category: "Life", date: "2025-02-10" },
+];

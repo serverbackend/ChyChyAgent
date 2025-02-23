@@ -14,7 +14,6 @@ const blogSchema = new mongoose.Schema(
     },
     author: { type: String, required: true },
     tags: [{ type: String }],
-    published: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

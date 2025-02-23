@@ -5,3 +5,7 @@
 * {
   @apply font-openSans;
 }
+
+body {
+  @apply w-full h-full;
+}

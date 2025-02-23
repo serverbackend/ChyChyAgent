@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
@@ -9,11 +9,18 @@ import Insurance from "./pages/Insurance";
 import Header from "./components/Header";
 // import Footer from "./components/Footer";
 import Blogs from "./pages/Blogs";
+import { useEffect } from "react";
 
 const App = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  }, [pathname]);
+
   return (
     <>
-      <div className="">
+      <div className="relative">
         {/* Nested Admin Routes */}
         <Routes>
           <Route path="/admin/*" element={<AdminRoutes />} />
