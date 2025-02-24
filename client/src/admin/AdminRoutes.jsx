@@ -13,6 +13,7 @@ import CreateBlog from "./pages/CreateBlog";
 import BlogList from "./pages/BlogList";
 import AiBlog from "./pages/AiBlog";
 import AdminProfile from "./pages/AdminProfile";
+import EditBlog from "./pages/EditBlog";
 
 const AdminRoutes = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true); // For demo purposes
@@ -68,6 +69,7 @@ const AdminRoutes = () => {
               <Route path="listing/:id" element={<ComingSoon />} />
               <Route path="create-blog" element={<CreateBlog />} />
               <Route path="blog-list" element={<BlogList />} />
+              <Route path="blog-edit/:id" element={<EditBlog />} />
               <Route path="use-AI" element={<AiBlog />} />
               <Route path="profile/:id" element={<AdminProfile />} />
             </Route>

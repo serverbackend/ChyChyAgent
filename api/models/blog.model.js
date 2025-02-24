@@ -14,17 +14,10 @@ const blogSchema = new mongoose.Schema(
     },
     author: { type: String, required: true },
     tags: [{ type: String }],
+    category: { type: String, required: true },
   },
   { timestamps: true }
 );
-
-// Create a slug from the title before saving
-blogSchema.pre("save", function (next) {
-  if (this.isModified("title")) {
-    this.slug = slugify(this.title, { lower: true, strict: true });
-  }
-  next();
-});
 
 const Blog = mongoose.model("Blog", blogSchema);
 module.exports = Blog;

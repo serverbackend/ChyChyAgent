@@ -39,7 +39,7 @@ const Dashboard = ({ darkMode }) => {
         darkMode ? "bg-gray-900 text-gray-300" : "bg-white text-gray-800"
       }`}
     >
-      <div className="grid lg:grid-cols-4 grid-cols-2 lg:gap-6 gap-1 items-center lg:my-1">
+      <div className="grid lg:grid-cols-4 grid-cols-2 lg:gap-6 gap-x-12 items-center lg:my-1">
         <AnalyticsCard icon={LuUsers} title={"Total customers"} value={1200} />
         <AnalyticsCard
           icon={FaCalendarAlt}

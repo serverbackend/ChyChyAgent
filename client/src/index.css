@@ -1,11 +1,73 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600&family=Pacifico&family=Lobster&family=Oswald:wght@400;700&family=Montserrat:wght@400;700&family=Bebas+Neue&family=Merriweather:wght@300;700&family=Lora:wght@400;700&family=Playfair+Display:wght@400;700&display=swap");
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 * {
   @apply font-openSans;
 }
-
 body {
   @apply w-full h-full;
+}
+
+/* Custom Scrollbar */
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #e5e7eb; /* Gray-200 */
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #6b7280; /* Gray-500 */
+    border-radius: 6px;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px; /* Adjust width */
+  }
+}
+
+/* Default font for the editor */
+.ql-container {
+  font-family: "Montserrat", sans-serif;
+}
+
+/* Custom styles for fonts */
+.ql-font-dancing-script {
+  font-family: "Dancing Script", cursive;
+}
+.ql-font-pacifico {
+  font-family: "Pacifico", cursive;
+}
+.ql-font-lobster {
+  font-family: "Lobster", cursive;
+}
+.ql-font-oswald {
+  font-family: "Oswald", sans-serif;
+}
+.ql-font-montserrat {
+  font-family: "Montserrat", sans-serif;
+}
+.ql-font-bebas-neue {
+  font-family: "Bebas Neue", sans-serif;
+}
+.ql-font-merriweather {
+  font-family: "Merriweather", serif;
+}
+.ql-font-lora {
+  font-family: "Lora", serif;
+}
+.ql-font-playfair {
+  font-family: "Playfair Display", serif;
 }
