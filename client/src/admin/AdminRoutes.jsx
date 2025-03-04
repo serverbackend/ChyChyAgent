@@ -40,7 +40,7 @@ const AdminRoutes = () => {
           />
         )}
         <div className="w-full h-full">
-          <Header darkMode={darkMode} />
+          {!hideSidebar && <Header darkMode={darkMode} />}
           <Routes>
             {/* Public Admin Routes */}
             <Route

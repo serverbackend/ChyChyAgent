@@ -1,6 +1,7 @@
 // Admin Controllers
 export const createBlog = async (req, res, next) => {
   try {
+    const {} = req.body;
   } catch (error) {
     console.log("Error in createBlog controller", error.message);
   }

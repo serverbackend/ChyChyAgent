@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import signupImg from "../../assets/image.jpg";
 import { FcGoogle } from "react-icons/fc";
 import { BsTwitterX } from "react-icons/bs";
 import { Loader } from "lucide-react";
 import { motion } from "framer-motion";
+import { useUserStore } from "../../stores/UseUserStore";
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -12,13 +13,12 @@ const Signup = () => {
     email: "",
   });
 
-  let loading;
+  const { signUp, user, loading } = useUserStore();
   const HandleSignupSubmit = (e) => {
-    loading = true;
     e.preventDefault();
 
     console.log(formData);
-    loading = false;
+    signUp(formData);
     setFormData({
       name: "",
       password: "",

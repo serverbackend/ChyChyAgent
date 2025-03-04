@@ -128,7 +128,7 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
       </ul>
 
       {/* Dark Mode Toggle */}
-      <div className="lg:mt-2 lg:py-1 py-3 lg:px-4">
+      <div className="lg:mt-2 lg:py-1 py-5 lg:px-4">
         <button
           onClick={toggleDarkMode}
           className="flex items-center gap-3 hover:text-blue-600"
