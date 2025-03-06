@@ -11,28 +11,41 @@ export const adminRoute = async (req, res, next) => {
 
 export const protectedRoute = async (req, res, next) => {
   try {
-    const accessToken = req.cookies.accessToken;
+    const accessToken = req.cookies?.accessToken;
 
     if (!accessToken) {
-      throw new CustomError("Unauthorized - No access token provided.", 401);
+      return res
+        .status(401)
+        .json({ error: "Unauthorized - No access token provided." });
     }
+
     try {
       const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
       const user = await User.findById(decoded.userId).select("-password");
 
       if (!user) {
-        throw new CustomError("User not found", 401);
+        return res
+          .status(401)
+          .json({ error: "Unauthorized - User not found." });
       }
+
       req.user = user;
       next();
     } catch (error) {
+      console.error("JWT Verification Error:", error.message);
+
       if (error.name === "TokenExpiredError") {
-        throw new CustomError("Unauthorized - Access token expired", 401);
+        return res.status(401).json({
+          error: "Unauthorized - Token expired. Please refresh your token.",
+        });
       }
-      throw error;
+
+      return res
+        .status(401)
+        .json({ error: "Unauthorized - Invalid access token." });
     }
   } catch (error) {
-    console.log("Error in protectRoute middleware", error.message);
-    throw new CustomError("Unauthorized - Invalid access token", 401);
+    console.error("Error in protectedRoute middleware:", error.message);
+    next(error); // Pass error to global error handler
   }
 };

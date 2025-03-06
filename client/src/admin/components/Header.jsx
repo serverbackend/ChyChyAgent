@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useUserStore } from "../../stores/useUserStore";
 
 const Header = ({ darkMode }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -8,6 +9,8 @@ const Header = ({ darkMode }) => {
   const toggleDropDown = () => {
     setDropdownOpen(!dropdownOpen);
   };
+
+  const { logout, user } = useUserStore();
   return (
     <div
       className={`py-4 px-4 max-h-16 w-full border-b z-40 border-stone-400 flex justify-between items-center sticky top-0 ${
@@ -30,13 +33,14 @@ const Header = ({ darkMode }) => {
           >
             <Link
               className="p-2 block hover:bg-gray-100 cursor-pointer"
-              to={"/admin/profile/1"}
+              to={`/admin/profile/${user._id}`}
             >
               Profile
             </Link>
 
             <Link
               to={"/admin/login"}
+              onClick={logout}
               className="p-2 block hover:bg-gray-100 cursor-pointer"
             >
               Sign Out

@@ -1,81 +1,66 @@
-// import React, { useState, useEffect } from "react";
-// import axios from "axios";
+import { useState, useEffect } from "react";
+import { useUserStore } from "../../stores/useUserStore";
 
 const AdminProfile = () => {
-  // const [admin, setAdmin] = useState(null);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState("");
-  // const adminId = "ADMIN_ID_HERE"; // Replace with actual admin ID
+  const { user, uploadProfileImage } = useUserStore();
+  const [admin, setAdmin] = useState(user || {});
+  const [preview, setPreview] = useState(admin.image);
 
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     try {
-  //       const { data } = await axios.get(
-  //         `http://localhost:5000/api/v1/admin/profile/${adminId}`
-  //       );
-  //       setAdmin(data);
-  //     } catch (err) {
-  //       setError("Failed to fetch admin profile");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    if (user) {
+      setAdmin(user);
+      setPreview(user.image);
+    }
+  }, [user]);
 
-  //   fetchProfile();
-  // }, []);
-
-  // const handleImageUpload = async (e) => {
-  //   const file = e.target.files[0];
-  //   if (!file) return;
-
-  //   const formData = new FormData();
-  //   formData.append("image", file);
-
-  //   try {
-  //     const { data } = await axios.put(
-  //       `http://localhost:5000/api/v1/admin/profile/${adminId}/image`,
-  //       formData,
-  //       { headers: { "Content-Type": "multipart/form-data" } }
-  //     );
-
-  //     setAdmin((prev) => ({ ...prev, image: data.image }));
-  //   } catch (err) {
-  //     setError("Failed to upload image");
-  //   }
-  // };
-
-  // if (loading) return <p>Loading...</p>;
-  // if (error) return <p className="text-red-500">{error}</p>;
+  // Handle image upload
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setPreview(imageUrl); // Show preview before uploading
+      uploadProfileImage(file); // Upload image to Cloudinary
+    }
+  };
 
   return (
-    <div className=" w-full h-svh lg:mx-0 mx-auto p-6 bg-white ">
-      <h2 className="text-xl font-bold text-gray-700">Admin Profile</h2>
+    <div className="w-full min-h-full flex flex-col items-center justify-center p-6">
+      <div className="border border-stone-400 rounded-lg p-6 w-full max-w-lg">
+        <h2 className="text-2xl font-bold text-gray-800 text-center">
+          Admin Profile
+        </h2>
 
-      {/* Profile Image */}
-      <div className="relative w-32 h-32 mx-auto my-4">
-        <label htmlFor="profileImage">
-          <img
-            // src={`http://localhost:5000${admin.image}`}
-            src="https://images.pexels.com/photos/27992044/pexels-photo-27992044/free-photo-of-young-woman-in-blue-white-blazer-with-pink-glasses.jpeg?auto=compress&cs=tinysrgb&w=600"
-            alt="Profile"
-            className="w-full h-full object-cover rounded-full cursor-pointer border border-gray-300"
+        {/* Profile Image */}
+        <div className="relative w-32 h-32 mx-auto my-4">
+          <label htmlFor="profileImage" className="cursor-pointer">
+            <img
+              src={
+                preview ||
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                  admin.name
+                )}&background=random`
+              }
+              alt="Profile Admin Image"
+              className="w-full h-full object-cover rounded-full border-4 border-gray-300 shadow-sm"
+            />
+          </label>
+          <input
+            type="file"
+            id="profileImage"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageChange}
           />
-        </label>
-        <input
-          type="file"
-          id="profileImage"
-          accept="image/*"
-          className="hidden"
-          // onChange={handleImageUpload}
-        />
-      </div>
+        </div>
 
-      {/* Profile Info */}
-      <div className="lg:text-start text-center">
-        <p className="text-gray-700 text-lg font-semibold">Admin</p>
-        <p className="text-gray-600">admin@gmail.com</p>
-        <p className="text-gray-500">Role:Admin</p>
-        <p className="text-gray-700 font-semibold mt-2">Blog Posts: 90</p>
+        {/* Profile Info */}
+        <div className="text-center">
+          <p className="text-gray-800 text-xl font-semibold capitalize">
+            {admin.name || "Admin"}
+          </p>
+          <p className="text-gray-600">{admin.email || "admin@example.com"}</p>
+          <p className="text-gray-500 capitalize">{admin.role || "Role"}</p>
+        </div>
       </div>
     </div>
   );

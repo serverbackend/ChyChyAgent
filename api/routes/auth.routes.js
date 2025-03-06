@@ -5,19 +5,31 @@ import {
   logout,
   refreshToken,
   signup,
+  uploadProfileImage,
 } from "../controllers/auth.controller.js";
-import { protectedRoute } from "../middlewares/auth.midlleware.js";
+import { protectedRoute } from "../middlewares/auth.middleware.js";
+import multer from "multer";
 
 const router = express.Router();
 // signup routes
-router.get("/signup", signup);
+router.post("/signup", signup);
 // login routes
-router.get("/login", login);
+router.post("/login", login);
 // logout routes
-router.get("/logout", logout);
+router.post("/logout", logout);
 // get profile routes
 router.get("/profile", protectedRoute, getProfile);
 // refresh token routes
-router.get("/refresh-token", refreshToken);
+router.post("/refresh-token", refreshToken);
+// upload profile image
+// Configure Multer to store file in memory
+const upload = multer({ storage: multer.memoryStorage() });
+
+router.post(
+  "/upload-image",
+  protectedRoute,
+  upload.single("file"),
+  uploadProfileImage
+);
 
 export default router;

@@ -6,19 +6,20 @@ import { BsTwitterX } from "react-icons/bs";
 import { Loader } from "lucide-react";
 import { motion } from "framer-motion";
 import { useUserStore } from "../../stores/UseUserStore";
+import { useNavigate } from "react-router-dom";
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
     password: "",
     email: "",
   });
-
-  const { signUp, user, loading } = useUserStore();
+  const navigate = useNavigate();
+  const { signUp, loading } = useUserStore();
   const HandleSignupSubmit = (e) => {
     e.preventDefault();
 
     console.log(formData);
-    signUp(formData);
+    signUp(formData, navigate);
     setFormData({
       name: "",
       password: "",

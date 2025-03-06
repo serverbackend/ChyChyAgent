@@ -1,17 +1,21 @@
-import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import { useUserStore } from "../stores/useUserStore";
 
 const AdminProtectedRoute = () => {
-  // Temporary hardcoded user object for testing
-  const user = { name: "Edeh Chinedu", role: "admin" }; // Change to "user" to test redirect
+  const { user } = useUserStore();
 
-  // If no user or user is not an admin, redirect to login
-  if (!user || user.role !== "admin") {
+  // If no user, redirect to login
+  if (!user) {
     return <Navigate to="/admin/login" replace />;
   }
 
-  // If authenticated and authorized, render the requested route
-  return <Outlet />;
+  // If user is an admin, allow access to protected routes
+  if (user.role === "admin") {
+    return <Outlet />;
+  }
+
+  // If user is logged in but not an admin, redirect to home or an unauthorized page
+  return <Navigate to="/" replace />;
 };
 
 export default AdminProtectedRoute;

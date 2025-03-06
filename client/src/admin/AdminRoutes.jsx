@@ -1,5 +1,5 @@
 import { Route, Routes, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminProtectedRoute from "./AdminProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import Signup from "./pages/Signup";
@@ -14,11 +14,21 @@ import BlogList from "./pages/BlogList";
 import AiBlog from "./pages/AiBlog";
 import AdminProfile from "./pages/AdminProfile";
 import EditBlog from "./pages/EditBlog";
+import Loading from "../components/Loading";
+import { useUserStore } from "../stores/useUserStore";
 
 const AdminRoutes = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // For demo purposes
   const location = useLocation(); // To track the current route
   const [darkMode, setDarkMode] = useState(false);
+
+  const { user, checkAuth, checkingAuth } = useUserStore();
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+  useEffect(() => {
+    if (!user) return;
+  }, [user]);
+  if (checkingAuth) return <Loading />;
 
   // Hide sidebar on login or signup pages
   const hideSidebar =
@@ -45,19 +55,20 @@ const AdminRoutes = () => {
             {/* Public Admin Routes */}
             <Route
               path="/login"
-              element={<Login setIsAuthenticated={setIsAuthenticated} />}
+              element={!user ? <Login /> : <Navigate to={"/admin/dashboard"} />}
             />
-            <Route path="/signup" element={<Signup />} />
+            <Route
+              path="/signup"
+              element={
+                !user ? <Signup /> : <Navigate to={"/admin/dashboard"} />
+              }
+            />
 
             {/* Redirect /admin to /admin/dashboard */}
             <Route path="/" element={<Navigate to="dashboard" replace />} />
 
             {/* Protected Admin Routes */}
-            <Route
-              element={
-                <AdminProtectedRoute isAuthenticated={isAuthenticated} />
-              }
-            >
+            <Route element={<AdminProtectedRoute />}>
               <Route
                 path="dashboard"
                 element={<Dashboard darkMode={darkMode} />}

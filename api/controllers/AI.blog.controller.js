@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import CustomError from "../utils/CustomError";
+import CustomError from "../utils/CustomError.js";
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -20,7 +20,7 @@ export const generateAiBlog = async (req, res) => {
     res.json({ content });
   } catch (error) {
     console.error("Error in generateAiBlog controller:", error.message);
-    res.status(500).json({ error: "Failed to generate blog content" });
+    throw new CustomError(500, "Failed to generate blog content");
   }
 };
 
@@ -48,6 +48,6 @@ export const generateAiIdeas = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in generateAiIdeas controller", error.message);
-    res.status(500).json({ error: "Failed to generate ideas" });
+    throw new CustomError(500, "Failed to generate ideas");
   }
 };

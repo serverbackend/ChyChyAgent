@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { LuUsers } from "react-icons/lu";
 import { FaCalendarAlt, FaRegNewspaper, FaListAlt } from "react-icons/fa";
@@ -24,8 +24,17 @@ import {
 } from "../utils/data";
 import { Link } from "react-router-dom";
 import AnalyticsCard from "../components/AnalyticsCard";
+import { useBlogStore } from "../../stores/useBlogStore";
+import { formattedDate } from "../../utils/dateFormatter";
 const Dashboard = ({ darkMode }) => {
   const [timeFrame, setTimeFrame] = useState("weekly");
+  const [blog, setBlogs] = useState([]);
+  const { getAllBlog, blogs } = useBlogStore();
+
+  useEffect(() => {
+    getAllBlog();
+    setBlogs(blogs);
+  }, [blogs]);
   const data =
     timeFrame === "weekly"
       ? weeklyData
@@ -136,7 +145,7 @@ const Dashboard = ({ darkMode }) => {
                 </tr>
               </thead>
               <tbody>
-                {blogs.map((blog, index) => (
+                {blog.map((blog, index) => (
                   <tr
                     key={index}
                     className="hover:bg-gray-50 dark:hover:bg-gray-950"
@@ -148,7 +157,7 @@ const Dashboard = ({ darkMode }) => {
                       {blog.category}
                     </td>
                     <td className="border text-xs border-gray-300 p-2">
-                      {blog.date}
+                      {formattedDate(blog.createdAt)}
                     </td>
                   </tr>
                 ))}

@@ -1,24 +1,26 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import signupImg from "../../assets/image.jpg";
 import { FcGoogle } from "react-icons/fc";
 import { BsTwitterX } from "react-icons/bs";
 import { Loader } from "lucide-react";
 import { motion } from "framer-motion";
+import { useUserStore } from "../../stores/useUserStore";
+import { useNavigate } from "react-router-dom";
+
 const Login = () => {
   const [formData, setFormData] = useState({
     password: "",
     email: "",
   });
-
-  let loading;
-  const AdminName = "Edeh Chinedu";
+  const navigate = useNavigate();
+  const { login, user, loading } = useUserStore();
+  const AdminName = user ? user.name : "Admin";
   const HandleLoginSubmit = (e) => {
-    loading = true;
     e.preventDefault();
 
     console.log(formData);
-    loading = false;
+    login(formData, navigate);
     setFormData({
       password: "",
       email: "",

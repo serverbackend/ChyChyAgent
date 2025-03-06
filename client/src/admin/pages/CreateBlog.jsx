@@ -4,6 +4,7 @@ import { LiaTimesSolid } from "react-icons/lia";
 import coverImg from "../../assets/cover-img.png";
 import { generateSlug } from "../hooks/generateSlug";
 import Editor from "../components/Editor";
+import { useBlogStore } from "../../stores/useBlogStore";
 
 const CreateBlog = () => {
   const [title, setTitle] = useState("");
@@ -43,7 +44,8 @@ const CreateBlog = () => {
   // Handle tags
   const handleTagInput = (e) => {
     if (e.key === "Enter" && e.target.value) {
-      setTags([...tags, e.target.value]);
+      e.preventDefault(); // Prevent form submission
+      setTags([...tags, e.target.value.trim()]);
       e.target.value = "";
     }
   };
@@ -52,6 +54,7 @@ const CreateBlog = () => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
+  const { createBlog } = useBlogStore();
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -59,13 +62,23 @@ const CreateBlog = () => {
       title,
       slug,
       description,
-      content, // Now it gets updated content
+      content,
       image: image ? image.name : null,
       tags,
       category,
     };
 
+    createBlog(blogData);
     console.log(blogData); // Replace with API call
+
+    // Reset form fields
+    setTitle("");
+    setSlug("");
+    setDescription("");
+    setContent("");
+    setImage(null);
+    setTags([]);
+    setCategory("real-estate");
   };
 
   return (

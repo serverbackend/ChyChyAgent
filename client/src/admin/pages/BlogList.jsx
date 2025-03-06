@@ -1,26 +1,20 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MdOutlineDeleteSweep } from "react-icons/md";
 import { FaEdit, FaRegStar, FaStar } from "react-icons/fa";
 import { truncateText } from "../../hooks/truncateText";
-import { fakeBlogs } from "../utils/data";
+import { useBlogStore } from "../../stores/useBlogStore";
+import { formattedDate } from "../../utils/dateFormatter";
 
 const BlogList = () => {
-  const [blogs, setBlogs] = useState(fakeBlogs);
+  const [blog, setBlogs] = useState([]);
 
-  // Toggle isFeatured state
-  const toggleFeatured = (id) => {
-    setBlogs((prevBlogs) =>
-      prevBlogs.map((blog) =>
-        blog._id === id ? { ...blog, isFeatured: !blog.isFeatured } : blog
-      )
-    );
-  };
+  const { getAllBlog, blogs, deleteBlog, toggleFeaturedBlog } = useBlogStore();
 
-  // Delete a blog
-  const deleteBlog = (id) => {
-    setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog._id !== id));
-  };
+  useEffect(() => {
+    getAllBlog();
+    setBlogs(blogs);
+  }, [blogs]);
 
   return (
     <div className="py-2 px-2 w-full h-screen dark:text-white dark:bg-gray-900">
@@ -49,7 +43,7 @@ const BlogList = () => {
               </tr>
             </thead>
             <tbody>
-              {blogs.map((blog) => (
+              {blog.map((blog) => (
                 <tr
                   key={blog._id}
                   className="hover:bg-gray-50 dark:hover:bg-gray-950"
@@ -60,7 +54,7 @@ const BlogList = () => {
                   </td>
 
                   <td className="text-xs border-gray-300 px-8">
-                    <button onClick={() => toggleFeatured(blog._id)}>
+                    <button onClick={() => toggleFeaturedBlog(blog._id)}>
                       {blog.isFeatured ? (
                         <FaStar size={24} className="text-yellow-400" />
                       ) : (
@@ -72,7 +66,9 @@ const BlogList = () => {
                   <td className="text-xs border-gray-300 p-2">
                     {blog.category}
                   </td>
-                  <td className="text-xs border-gray-300 p-2">{blog.date}</td>
+                  <td className="text-xs border-gray-300 p-2">
+                    {formattedDate(blog.createdAt)}
+                  </td>
                   <td className="text-xs border-gray-300 p-2">
                     <div className="flex gap-2 items-center">
                       <Link to={`/admin/blog-edit/${blog._id}`}>

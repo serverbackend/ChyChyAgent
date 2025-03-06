@@ -9,7 +9,7 @@ import {
   getSingleBlog,
   toggleFeaturedBlog,
 } from "../controllers/blog.controller.js";
-import { adminRoute, protectedRoute } from "../middlewares/auth.midlleware.js";
+import { adminRoute, protectedRoute } from "../middlewares/auth.middleware.js";
 import { validateBlog } from "../middlewares/validation.middleware.js";
 
 const router = express.Router();
@@ -20,7 +20,7 @@ router.patch("/:id", protectedRoute, adminRoute, toggleFeaturedBlog);
 router.patch("/edit/:id", protectedRoute, adminRoute, validateBlog, editBlog);
 router.delete("/delete/:id", protectedRoute, adminRoute, deleteBlog);
 
-// users routes
+// Users routes
 router.get("/", getAllBlogs);
 router.get("/:id", getSingleBlog);
 router.get("/category/:category", getBlogByCategory);

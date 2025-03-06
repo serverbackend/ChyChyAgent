@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import slugify from "slugify";
 
 const blogSchema = new mongoose.Schema(
   {
@@ -20,4 +19,4 @@ const blogSchema = new mongoose.Schema(
 );
 
 const Blog = mongoose.model("Blog", blogSchema);
-module.exports = Blog;
+export default Blog;
