@@ -6,20 +6,25 @@ import {
   CreditCardIcon,
   MoonIcon,
   SunIcon,
-} from "lucide-react"; // Using lucide-react for icons
+} from "lucide-react";
 import { FaIndent } from "react-icons/fa6";
 import { FaRobot, FaShieldAlt } from "react-icons/fa";
 import { AiOutlinePlusCircle, AiOutlineUnorderedList } from "react-icons/ai";
 import { RiCommunityLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useUserStore } from "../../stores/useUserStore";
 
 const Sidebar = ({ darkMode, toggleDarkMode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
-  const user = { name: "Edeh Chinedu", role: "admin" };
+  const { user } = useUserStore();
+  const profileImg =
+    user?.image ||
+    "https://t3.ftcdn.net/jpg/06/33/54/78/360_F_633547842_AugYzexTpMJ9z1YcpTKUBoqBF0CUCk10.jpg";
+
   return (
     <div
       className={`h-full py-[.40em] lg:py-[.22em] pb-[.28em] transition-all duration-300 border-r border-stone-400 sticky top-0 left-0 z-50 ${
@@ -32,6 +37,7 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
       <div className="border-b border-stone-400 h-18 py-4 flex items-center gap-2 justify-between px-4 ">
         <span className="font-bold lg:text-xl">Logo</span>
         <button
+          data-cy="sidebar-toggle"
           onClick={toggleSidebar}
           className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
         >
@@ -41,19 +47,19 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
 
       {/* Sidebar Links */}
       <ul className="lg:mt-2 lg:px-2">
-        <li className="hover:bg-emerald-300  px-0 lg:px-3 lg:py-2 py-[1.45em]">
+        <li className="px-0 lg:px-3 lg:py-2 py-[1.45em]">
           <Link
             to="/admin/dashboard"
-            className="flex items-center lg:justify-start justify-center gap-3 hover:text-blue-600"
+            className="flex items-center lg:justify-start justify-center gap-3"
           >
             <HomeIcon className="lg:text-2xl text-xl" />
             {isOpen && <span className="text-xs lg:text-base">Dashboard</span>}
           </Link>
         </li>
-        <li className="hover:bg-emerald-300 px-0 lg:px-3 lg:py-2 py-[1.45em]">
+        <li className="px-0 lg:px-3 lg:py-2 py-[1.45em]">
           <Link
             to="/admin/appointment"
-            className="flex items-center lg:justify-start justify-center gap-3 hover:text-blue-600"
+            className="flex items-center lg:justify-start justify-center gap-3"
           >
             <CalendarIcon className="lg:text-2xl text-xl" />
             {isOpen && (
@@ -61,10 +67,10 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
             )}
           </Link>
         </li>
-        <li className="hover:bg-emerald-300 px-0 lg:px-3 lg:py-2 py-[1.45em]">
+        <li className="px-0 lg:px-3 lg:py-2 py-[1.45em]">
           <Link
             to="/admin/customer"
-            className="flex items-center lg:justify-start justify-center gap-3 hover:text-blue-600"
+            className="flex items-center lg:justify-start justify-center gap-3"
           >
             <UsersIcon className="lg:text-2xl text-xl" />
             {isOpen && <span className="text-xs lg:text-base">Customers</span>}
@@ -74,7 +80,7 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
           <h4 className="text-gray-500 text-sm my-2">Payments</h4>
           <Link
             to="/admin/ledger"
-            className="flex items-center gap-3 hover:bg-emerald-300 lg:justify-start justify-center px-0 lg:px-3 lg:py-2 py-[1.45em]"
+            className="flex items-center gap-3 lg:justify-start justify-center px-0 lg:px-3 lg:py-2 py-[1.45em]"
           >
             <CreditCardIcon className="lg:text-2xl text-xl" />
             {isOpen && <span className="text-xs lg:text-base">Ledger</span>}
@@ -84,7 +90,7 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
           <h4 className="text-gray-500 text-sm mt-4">Listings</h4>
           <Link
             to="/admin/listing/real-estate"
-            className="flex items-center gap-3 hover:text-blue-600 hover:bg-emerald-300 lg:justify-start justify-center px-0 lg:px-3 lg:py-2 py-[1.45em]"
+            className="flex items-center gap-3 lg:justify-start justify-center px-0 lg:px-3 lg:py-2 py-[1.45em]"
           >
             <RiCommunityLine className="lg:text-2xl text-xl" />
             {isOpen && (
@@ -93,7 +99,7 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
           </Link>
           <Link
             to="/admin/listing/insurance"
-            className="flex items-center gap-3 hover:text-blue-600 hover:bg-emerald-300 lg:justify-start justify-center px-0 lg:px-3 lg:py-2 py-[1.45em]"
+            className="flex items-center gap-3 lg:justify-start justify-center px-0 lg:px-3 lg:py-2 py-[1.45em]"
           >
             <FaShieldAlt className="lg:text-2xl text-xl" />
             {isOpen && <span className="text-xs lg:text-base">Insurance</span>}
@@ -103,7 +109,8 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
           <h4 className="text-gray-500 text-sm mt-4">Blogs</h4>
           <Link
             to="/admin/create-blog"
-            className="flex items-center gap-3 hover:text-blue-600 hover:bg-emerald-300 lg:justify-start justify-center px-0 lg:px-3 lg:py-2 py-[1.45em]"
+            data-cy="create-blog-link"
+            className="flex items-center gap-3 lg:justify-start justify-center px-0 lg:px-3 lg:py-2 py-[1.45em]"
           >
             <AiOutlinePlusCircle className="lg:text-2xl text-xl" />
             {isOpen && (
@@ -112,14 +119,14 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
           </Link>
           <Link
             to="/admin/blog-list"
-            className="flex items-center gap-3 hover:text-blue-600 hover:bg-emerald-300 lg:justify-start justify-center px-0 lg:px-3 lg:py-2 py-[1.45em]"
+            className="flex items-center gap-3 lg:justify-start justify-center px-0 lg:px-3 lg:py-2 py-[1.45em]"
           >
             <AiOutlineUnorderedList className="lg:text-2xl text-xl" />
             {isOpen && <span className="text-xs lg:text-base">Blogs List</span>}
           </Link>
           <Link
             to="/admin/use-AI"
-            className="flex items-center gap-3 hover:text-blue-600 hover:bg-emerald-300 lg:justify-start justify-center px-0 lg:px-3 lg:py-2 py-[1.45em]"
+            className="flex items-center gap-3 lg:justify-start justify-center px-0 lg:px-3 lg:py-2 py-[1.45em]"
           >
             <FaRobot className="lg:text-2xl text-xl" />
             {isOpen && <span className="text-xs lg:text-base">Use AI</span>}
@@ -148,19 +155,23 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
 
       {/* User Profile and Logout */}
       <Link
-        to={"/admin/profile/1"}
+        to={`/admin/profile/${user?._id || 1}`}
         className="w-full lg:py-0 py-1 lg:mt-1 flex justify-center flex-col lg:px-5 px-2"
       >
         <div className="flex lg:items-center lg:gap-3 justify-center">
           <img
-            src="https://t3.ftcdn.net/jpg/06/33/54/78/360_F_633547842_AugYzexTpMJ9z1YcpTKUBoqBF0CUCk10.jpg"
+            src={profileImg}
             alt="User"
             className="rounded-full w-[50px] h-[50px] lg:w-[40px] lg:h-[40px] object-cover"
           />
           {isOpen && (
             <div className="">
-              <p className="font-semibold lg:text-base text-xs">{user.name}</p>
-              <p className="lg:text-sm text-xs text-gray-500">{user.role}</p>
+              <p className="font-semibold lg:text-base text-xs">
+                {user?.name || "Admin"}
+              </p>
+              <p className="lg:text-sm text-xs text-gray-500">
+                {user?.role || "admin"}
+              </p>
             </div>
           )}
         </div>

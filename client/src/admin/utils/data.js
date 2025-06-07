@@ -31,12 +31,13 @@ export const yearlyData = [
 ];
 
 export const pieData = [
-  { name: "Real Estate", value: 50 },
+  { name: "Real Estate", value: 30 },
   { name: "Life", value: 30 },
   { name: "Insurance", value: 20 },
+  { name: "Finance", value: 20 },
 ];
 
-export const pieCOLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+export const pieCOLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 export const prompts = [
   // Real Estate

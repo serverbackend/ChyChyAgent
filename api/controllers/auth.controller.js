@@ -85,6 +85,33 @@ export const login = async (req, res, next) => {
   }
 };
 
+export const useOauth = async (req, res, next) => {
+  try {
+    // Generate JWT tokens for your app
+    const { accessToken, refreshToken } = generateTokens(
+      req.user._id,
+      req.user.name
+    );
+    await storeRefreshToken(req.user._id, refreshToken);
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+    });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+    });
+
+    // Redirect to your frontend with a success message or token
+    res.redirect(`${process.env.CLIENT_URL}/admin/dashboard`);
+  } catch (error) {
+    console.log("Error in useOauth controller", error.message);
+  }
+};
+
 export const logout = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken;

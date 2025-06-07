@@ -11,6 +11,11 @@ const Header = ({ darkMode }) => {
   };
 
   const { logout, user } = useUserStore();
+  // Use user.profileImage if available, else fallback
+  const profileImg =
+    user?.image ||
+    "https://t3.ftcdn.net/jpg/06/33/54/78/360_F_633547842_AugYzexTpMJ9z1YcpTKUBoqBF0CUCk10.jpg";
+
   return (
     <div
       className={`py-4 px-4 max-h-16 w-full border-b z-40 border-stone-400 flex justify-between items-center sticky top-0 ${
@@ -20,9 +25,9 @@ const Header = ({ darkMode }) => {
       <div>Admin Dashboard</div>
       <div className="relative">
         <img
-          src="https://t3.ftcdn.net/jpg/06/33/54/78/360_F_633547842_AugYzexTpMJ9z1YcpTKUBoqBF0CUCk10.jpg"
+          src={profileImg}
           alt="Profile"
-          className="rounded-full w-[50px] h-[50px] cursor-pointer"
+          className="rounded-full w-[50px] h-[50px] cursor-pointer object-cover"
           onClick={toggleDropDown}
         />
         {dropdownOpen && (

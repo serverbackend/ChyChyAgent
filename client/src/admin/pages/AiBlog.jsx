@@ -1,131 +1,129 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-import { FaRegCopy } from "react-icons/fa";
+import { FaRegCopy, FaTimes } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
-import removeMarkdown from "remove-markdown";
 import { prompts } from "../utils/data";
+
 const AiBlog = () => {
   const [prompt, setPrompt] = useState("");
-  const [submittedPrompt, setSubmittedPrompt] = useState("");
   const [generatedContent, setGeneratedContent] = useState("");
   const [blogIdeas, setBlogIdeas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingIdeas, setLoadingIdeas] = useState(false);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
 
-  const removeMarkdown = (text) => {
-    return text
-      .replace(/(\*\*|__)(.*?)\1/g, "$2") // Bold (**text** or __text__)
-      .replace(/(\*|_)(.*?)\1/g, "$2") // Italic (*text* or _text_)
-      .replace(/~~(.*?)~~/g, "$1") // Strikethrough
-      .replace(/`(.*?)`/g, "$1") // Inline code
-      .replace(/#+\s?/g, "") // Headers (#, ##, ###)
-      .replace(/>\s?/g, "") // Blockquotes (>)
-      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Links [text](url)
-      .replace(/!\[.*?\]\(.*?\)/g, "") // Images
-      .replace(/[-*]\s+/g, "") // Lists (-, *, •)
-      .replace(/\n{2,}/g, "\n") // Remove extra newlines
+  // Remove markdown formatting for clipboard
+  const removeMarkdown = (text) =>
+    text
+      .replace(/(\*\*|__)(.*?)\1/g, "$2")
+      .replace(/(\*|_)(.*?)\1/g, "$2")
+      .replace(/~~(.*?)~~/g, "$1")
+      .replace(/`(.*?)`/g, "$1")
+      .replace(/#+\s?/g, "")
+      .replace(/>\s?/g, "")
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+      .replace(/!\[.*?\]\(.*?\)/g, "")
+      .replace(/[-*]\s+/g, "")
+      .replace(/\n{2,}/g, "\n")
       .trim();
-  };
 
-  // Function to Generate Blog Content
+  // Generate AI blog content
   const generateBlogContent = async () => {
     if (!prompt.trim()) return;
-
     setLoading(true);
     setError("");
-    setGeneratedContent(""); // Clear previous content
-
+    setGeneratedContent("");
     try {
       const response = await axios.post(
         "http://localhost:5000/api/v1/Aiblog/generate",
         { prompt }
       );
-
-      console.log("API Response:", response.data); // Debugging Step
-
-      // Try different possible structures based on response data
       let content = "";
-
-      if (response.data?.content) {
-        content = response.data.content; // If content is directly available
-      } else if (response.data?.text) {
-        content = response.data.text; // If content is inside "text"
-      } else if (Array.isArray(response.data) && response.data.length > 0) {
-        content = response.data[0]; // If API returns an array
-      } else {
-        content = "No content generated. Please try again.";
-      }
-
-      setSubmittedPrompt(prompt);
+      if (response.data?.content) content = response.data.content;
+      else if (response.data?.text) content = response.data.text;
+      else if (Array.isArray(response.data) && response.data.length > 0)
+        content = response.data[0];
+      else content = "No content generated. Please try again.";
       setGeneratedContent(content);
-    } catch (error) {
-      console.error("Error generating content:", error);
+    } catch (err) {
+      console.error("Error generating blog content:", err);
       setError("Failed to generate blog content. Please try again.");
     }
-
     setLoading(false);
   };
 
-  // Function to Get Blog Ideas
+  // Generate AI blog ideas
   const generateBlogIdeas = async () => {
     setLoadingIdeas(true);
     setError("");
-
-    // Pick a random prompt from the list
     const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
-
     try {
       const response = await axios.post(
         "http://localhost:5000/api/v1/Aiblog/ideas",
-        { prompt: randomPrompt } // Use a random prompt each time
+        { prompt: randomPrompt }
       );
       setBlogIdeas(response.data.ideas || []);
-    } catch (error) {
-      console.error("Error fetching blog ideas:", error);
+    } catch (err) {
+      console.error("Error fetching blog ideas:", err);
       setError("Failed to fetch blog ideas.");
     }
-
     setLoadingIdeas(false);
   };
 
-  // Function to Copy Text to Clipboard
+  // Copy to clipboard
   const handleCopy = (text) => {
     const plainText = removeMarkdown(text);
     navigator.clipboard
       .writeText(plainText)
       .then(() => {
-        alert("Content copied successfully!");
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
       })
-      .catch((err) => console.error("Failed to copy:", err));
+      .catch(() => setCopied(false));
   };
+
+  // Close blog ideas
+  const handleCloseIdeas = () => setBlogIdeas([]);
+
+  // Close generated content
+  const handleCloseGenerated = () => setGeneratedContent("");
 
   return (
     <div className="w-full h-full min-h-dvh dark:text-white dark:bg-gray-900">
-      <div className="max-w-3xl lg:mx-auto p-3 lg:p-6 ">
-        {/* Error Message */}
+      <div className="max-w-3xl lg:mx-auto p-3 lg:p-6">
         {error && <p className="text-red-600 mb-4">{error}</p>}
 
-        {/* Blog Ideas Button */}
         <button
           onClick={generateBlogIdeas}
-          className="bg-green-600 text-white p-2 lg:px-5 lg:py-2 rounded-md mb-4 hover:bg-green-700 transition"
+          className="bg-green-600 text-white p-2 lg:px-5 lg:py-2 rounded-md mb-4 hover:bg-green-700 dark:hover:bg-green-800 transition"
+          disabled={loadingIdeas}
         >
           {loadingIdeas ? "Fetching Ideas..." : "Get Blog Ideas"}
         </button>
 
-        {/* Display Blog Ideas */}
         {blogIdeas.length > 0 && (
-          <ul className="mb-4">
-            {blogIdeas.map((idea, index) => (
-              <li key={index} className="bg-gray-100 p-2 rounded-md mb-2 prose">
-                <ReactMarkdown>{idea.trim()}</ReactMarkdown>
-              </li>
-            ))}
-          </ul>
+          <div className="mb-4 relative">
+            <button
+              onClick={handleCloseIdeas}
+              className="absolute right-0 top-0 text-gray-500 hover:text-red-600 dark:hover:text-red-400 p-2"
+              title="Close"
+            >
+              <FaTimes size={18} />
+            </button>
+            <ul>
+              {blogIdeas.map((idea, idx) => (
+                <li
+                  key={idx}
+                  className="bg-gray-100 dark:bg-gray-800 p-2 rounded-md mb-2 prose dark:prose-invert"
+                >
+                  <ReactMarkdown>{idea.trim()}</ReactMarkdown>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
 
-        {/* Prompt Input */}
         <div className="flex gap-2">
           <input
             type="text"
@@ -136,25 +134,32 @@ const AiBlog = () => {
           />
           <button
             onClick={generateBlogContent}
-            className="bg-blue-600 text-white p-2 lg:px-5 lg:py-3 rounded-md hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white p-2 lg:px-5 lg:py-3 rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 transition"
             disabled={loading}
           >
             {loading ? "Generating..." : "Generate"}
           </button>
         </div>
 
-        {/* AI Generated Content (Rendered as Markdown) */}
         {generatedContent && (
-          <div className="mt-6 p-4 border rounded-md bg-white shadow">
+          <div className="mt-6 p-4 border rounded-md bg-white dark:bg-gray-800 shadow relative">
+            <button
+              onClick={handleCloseGenerated}
+              className="absolute right-2 top-2 text-gray-500 hover:text-red-600 dark:hover:text-red-400 p-2"
+              title="Close"
+            >
+              <FaTimes size={18} />
+            </button>
             <h3 className="text-lg font-semibold mb-2">AI Blog Content</h3>
-            <div className="prose">
+            <div className="prose dark:prose-invert">
               <ReactMarkdown>{generatedContent}</ReactMarkdown>
             </div>
             <button
               onClick={() => handleCopy(generatedContent)}
-              className="mt-4 text-gray-600 hover:text-black flex items-center"
+              className="mt-4 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white flex items-center"
             >
-              <FaRegCopy size={18} className="mr-2" /> Copy Content
+              <FaRegCopy size={18} className="mr-2" />
+              {copied ? "Copied!" : "Copy Content"}
             </button>
           </div>
         )}

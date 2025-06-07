@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import signupImg from "../../assets/image.jpg";
 import { FcGoogle } from "react-icons/fc";
-import { BsTwitterX } from "react-icons/bs";
 import { Loader } from "lucide-react";
 import { motion } from "framer-motion";
 import { useUserStore } from "../../stores/useUserStore";
@@ -14,7 +13,7 @@ const Login = () => {
     email: "",
   });
   const navigate = useNavigate();
-  const { login, user, loading } = useUserStore();
+  const { login, user, loading, getGoogleOAuthUrl } = useUserStore();
   const AdminName = user ? user.name : "Admin";
   const HandleLoginSubmit = (e) => {
     e.preventDefault();
@@ -115,7 +114,7 @@ const Login = () => {
 
                 <div className="flex items-center justify-start gap-1 text-xl lg:text-xs mt-4">
                   <div className="text-gray-600">
-                    Don't have an account yet?{" "}
+                    Don&apos;t have an account yet?{" "}
                   </div>
                   <Link
                     className="underline font-extrabold"
@@ -133,18 +132,15 @@ const Login = () => {
               <span className="w-full lg:w-[6em] h-[.5px] bg-gray-300"></span>
             </div>
             <div className="my-12 lg:my-6">
-              <button className="border mb-4 flex gap-2 items-center w-full lg:w-[250px] h-[50px] lg:h-[33px] justify-center rounded-md">
+              <a
+                href={getGoogleOAuthUrl()}
+                className="border mb-4 flex gap-2 items-center w-full lg:w-[250px] h-[50px] lg:h-[33px] justify-center rounded-md"
+              >
                 <span>
                   <FcGoogle className="text-4xl lg:text-2xl" />
                 </span>
                 Sign up with Google
-              </button>
-              <button className="flex gap-2 items-center w-full lg:w-[250px] h-[50px] lg:h-[33px] justify-center rounded-md text-white bg-black">
-                <span>
-                  <BsTwitterX className="text-3xl lg:text-2xl" />
-                </span>
-                Sign up with X
-              </button>
+              </a>
             </div>
           </div>
         </div>

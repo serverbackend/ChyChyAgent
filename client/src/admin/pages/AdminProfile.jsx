@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useUserStore } from "../../stores/useUserStore";
+import { FaUserCircle, FaCamera } from "react-icons/fa";
 
 const AdminProfile = () => {
   const { user, uploadProfileImage } = useUserStore();
@@ -24,42 +25,61 @@ const AdminProfile = () => {
   };
 
   return (
-    <div className="w-full min-h-full flex flex-col items-center justify-center p-6">
-      <div className="border border-stone-400 rounded-lg p-6 w-full max-w-lg">
-        <h2 className="text-2xl font-bold text-gray-800 text-center">
-          Admin Profile
-        </h2>
-
-        {/* Profile Image */}
-        <div className="relative w-32 h-32 mx-auto my-4">
-          <label htmlFor="profileImage" className="cursor-pointer">
-            <img
-              src={
-                preview ||
-                `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                  admin.name
-                )}&background=random`
-              }
-              alt="Profile Admin Image"
-              className="w-full h-full object-cover rounded-full border-4 border-gray-300 shadow-sm"
-            />
-          </label>
-          <input
-            type="file"
-            id="profileImage"
-            accept="image/*"
-            className="hidden"
-            onChange={handleImageChange}
-          />
-        </div>
-
-        {/* Profile Info */}
-        <div className="text-center">
-          <p className="text-gray-800 text-xl font-semibold capitalize">
-            {admin.name || "Admin"}
+    <div className="min-h-[calc(100vh-45px)] flex justify-center bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200">
+      <div className="w-full max-w-md p-8  bg-gray-100 dark:bg-gray-800">
+        <div className="flex flex-col items-center">
+          <div className="relative">
+            {preview ? (
+              <img
+                src={preview}
+                alt="Profile"
+                className="w-28 h-28 rounded-full object-cover border-4 border-blue-500"
+              />
+            ) : (
+              <FaUserCircle className="w-28 h-28 text-gray-400" />
+            )}
+            <label
+              htmlFor="profile-upload"
+              className="absolute bottom-2 right-2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full cursor-pointer shadow"
+              title="Change profile picture"
+            >
+              <FaCamera />
+              <input
+                id="profile-upload"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageChange}
+              />
+            </label>
+          </div>
+          <h2 className="mt-4 text-2xl font-bold">
+            {admin.name || "Admin User"}
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {admin.email || "admin@email.com"}
           </p>
-          <p className="text-gray-600">{admin.email || "admin@example.com"}</p>
-          <p className="text-gray-500 capitalize">{admin.role || "Role"}</p>
+          <span className="mt-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200">
+            {admin.role || "Admin"}
+          </span>
+        </div>
+        <div className="mt-8">
+          <h3 className="text-lg font-semibold mb-2">Profile Details</h3>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span className="font-medium">Full Name:</span>
+              <span>{admin.name || "Admin User"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-medium">Email:</span>
+              <span>{admin.email || "admin@email.com"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-medium">Role:</span>
+              <span>{admin.role || "Admin"}</span>
+            </div>
+            {/* Add more profile fields here if needed */}
+          </div>
         </div>
       </div>
     </div>

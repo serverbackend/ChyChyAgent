@@ -111,6 +111,13 @@ export const useUserStore = create((set, get) => ({
       throw error;
     }
   },
+
+  getGoogleOAuthUrl: () => {
+    // Remove trailing /api/v1 if present
+    let base = axios.defaults.baseURL || "";
+    base = base.replace(/\/api\/v1$/, "");
+    return `${base}/api/v1/auth/google`;
+  },
 }));
 
 // Axios interceptor for token refresh

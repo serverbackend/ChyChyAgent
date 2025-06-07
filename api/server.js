@@ -3,6 +3,8 @@ import donenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { connectDB } from "./libs/db.js";
+import passport from "./libs/passport.js";
+import session from "express-session";
 
 // imported Routes
 import authRoute from "./routes/auth.routes.js";
@@ -23,6 +25,15 @@ app.use(
     credentials: true,
   })
 );
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.use("/api/v1/auth", authRoute);

@@ -2,10 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import signupImg from "../../assets/image.jpg";
 import { FcGoogle } from "react-icons/fc";
-import { BsTwitterX } from "react-icons/bs";
 import { Loader } from "lucide-react";
 import { motion } from "framer-motion";
-import { useUserStore } from "../../stores/UseUserStore";
+import { useUserStore } from "../../stores/useUserStore";
 import { useNavigate } from "react-router-dom";
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +13,7 @@ const Signup = () => {
     email: "",
   });
   const navigate = useNavigate();
-  const { signUp, loading } = useUserStore();
+  const { signUp, loading, getGoogleOAuthUrl } = useUserStore();
   const HandleSignupSubmit = (e) => {
     e.preventDefault();
 
@@ -43,18 +42,15 @@ const Signup = () => {
           </div>
           <div className="">
             <div className="my-12 lg:my-6">
-              <button className="border mb-4 flex gap-2 items-center w-full lg:w-[250px] h-[50px] lg:h-[33px] justify-center rounded-md">
+              <a
+                href={getGoogleOAuthUrl()}
+                className="border mb-4 flex gap-2 items-center w-full lg:w-[250px] h-[50px] lg:h-[33px] justify-center rounded-md"
+              >
                 <span>
                   <FcGoogle className="text-4xl lg:text-2xl" />
                 </span>
                 Sign up with Google
-              </button>
-              <button className="flex gap-2 items-center w-full lg:w-[250px] h-[50px] lg:h-[33px] justify-center rounded-md text-white bg-black">
-                <span>
-                  <BsTwitterX className="text-3xl lg:text-2xl" />
-                </span>
-                Sign up with X
-              </button>
+              </a>
             </div>
             <div className="flex gap-2 items-center text-xl my-6 lg:my-3 text-gray-600">
               <span className="w-full lg:w-[6em] h-[.5px] bg-gray-300"></span>{" "}
