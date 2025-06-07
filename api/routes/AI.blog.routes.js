@@ -10,10 +10,16 @@ dotenv.config();
 
 const router = express.Router();
 
-// Generate Blog Content
-router.post("/generate", adminRoute, protectedRoute, generateAiBlog);
+// Public routes - accessible without authentication
+router.post("/generate", generateAiBlog);
+router.post("/ideas", generateAiIdeas);
 
-// Generate Blog Ideas
-router.post("/ideas", adminRoute, protectedRoute, generateAiIdeas);
+// Protected routes - require authentication
+router.post("/admin/generate", protectedRoute, generateAiBlog);
+router.post("/admin/ideas", protectedRoute, generateAiIdeas);
+
+// Admin-only routes
+router.post("/admin/advanced/generate", adminRoute, generateAiBlog);
+router.post("/admin/advanced/ideas", adminRoute, generateAiIdeas);
 
 export default router;

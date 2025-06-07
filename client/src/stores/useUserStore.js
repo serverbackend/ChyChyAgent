@@ -47,14 +47,17 @@ export const useUserStore = create((set, get) => ({
     }
   },
 
-  logout: async () => {
+  logout: async (navigate) => {
     try {
       await axios.post("/auth/logout");
       set({ user: null });
+      if (navigate) navigate("/admin/login");
     } catch (error) {
       toast.error(
         error.response?.data?.message || "An error occurred during logout"
       );
+      set({ user: null });
+      if (navigate) navigate("/admin/login");
     }
   },
 
@@ -136,6 +139,7 @@ axios.interceptors.response.use(
       } catch (refreshError) {
         // If refresh fails, redirect to login or handle as needed
         useUserStore.getState().logout();
+        window.location.href = "/admin/login";
         return Promise.reject(refreshError);
       }
     }

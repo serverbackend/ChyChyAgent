@@ -38,21 +38,6 @@ export const pieData = [
 
 export const pieCOLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
-export const blogs = [
-  {
-    title: "The Future of Real Estate",
-    category: "Real Estate",
-    date: "2025-02-20",
-  },
-  {
-    title: "Life Insurance Explained",
-    category: "Insurance",
-    date: "2025-02-18",
-  },
-  { title: "Home Buying Guide", category: "Real Estate", date: "2025-02-15" },
-  { title: "Financial Security Tips", category: "Life", date: "2025-02-10" },
-];
-
 export const prompts = [
   // Real Estate
   "Suggest 5 creative blog topics related to real estate and property investment.",

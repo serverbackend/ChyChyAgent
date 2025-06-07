@@ -1,15 +1,23 @@
-import Blog from "../models/Blog.model.js";
+import Blog from "../models/blog.model.js";
 import CustomError from "../utils/CustomError.js";
+import cloudinary from "../libs/cloudinary.js";
 
-// Create a new blog post
 export const createBlog = async (req, res, next) => {
   try {
-    const { title, slug, description, content, image, tags, category } =
+    const { title, slug, description, content, tags, category, image } =
       req.body;
-    const author = req.user.name; // Get author from protectedRoute
+    const author = req.user.name;
 
     if (!author) {
       throw new CustomError("Unauthorized: Author not found", 401);
+    }
+
+    // Parse tags if sent as JSON string
+    const parsedTags = typeof tags === "string" ? JSON.parse(tags) : tags;
+
+    // Use the image URL directly from the request body
+    if (!image) {
+      throw new CustomError("Image URL is required", 400);
     }
 
     const newBlog = new Blog({
@@ -17,9 +25,9 @@ export const createBlog = async (req, res, next) => {
       slug,
       description,
       content,
-      image,
+      image, // <-- use the URL
       author,
-      tags,
+      tags: parsedTags,
       category,
     });
 
@@ -28,6 +36,7 @@ export const createBlog = async (req, res, next) => {
       .status(201)
       .json({ message: "Blog created successfully", blog: newBlog });
   } catch (error) {
+    console.error(error);
     next(error);
   }
 };
@@ -53,11 +62,22 @@ export const deleteBlog = async (req, res, next) => {
 export const editBlog = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, description, content, image, tags, category } = req.body;
+    const { title, slug, description, content, image, tags, category } =
+      req.body;
+
+    let updatedImage = image;
+
+    // Upload new image if provided
+    if (image && image.startsWith("data:image")) {
+      const uploadedResponse = await cloudinary.uploader.upload(image, {
+        folder: "blogs",
+      });
+      updatedImage = uploadedResponse.secure_url;
+    }
 
     const updatedBlog = await Blog.findByIdAndUpdate(
       id,
-      { title, description, content, image, tags, category },
+      { title, description, content, image: updatedImage, tags, category },
       { new: true, runValidators: true }
     );
 
@@ -98,7 +118,7 @@ export const getAllBlogs = async (req, res, next) => {
     const blogs = await Blog.find().sort({ createdAt: -1 });
 
     if (!blogs.length) {
-      throw new CustomError("No blogs found", 404);
+      console.log("Blogs not found");
     }
 
     res.status(200).json({ blogs });
@@ -106,7 +126,6 @@ export const getAllBlogs = async (req, res, next) => {
     next(error);
   }
 };
-
 // Get a single blog post
 export const getSingleBlog = async (req, res, next) => {
   try {
@@ -149,6 +168,24 @@ export const getFeaturedBlogs = async (req, res, next) => {
     }
 
     res.status(200).json({ blogs });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const uploadBlogImage = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    const result = await cloudinary.uploader.upload_stream(
+      { folder: "Blog_Folders" },
+      (error, result) => {
+        if (error) return next(error);
+        res.json({ secure_url: result.secure_url });
+      }
+    );
+    result.end(req.file.buffer);
   } catch (error) {
     next(error);
   }

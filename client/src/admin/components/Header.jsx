@@ -34,13 +34,17 @@ const Header = ({ darkMode }) => {
             <Link
               className="p-2 block hover:bg-gray-100 cursor-pointer"
               to={`/admin/profile/${user._id}`}
+              onClick={() => setDropdownOpen(false)}
             >
               Profile
             </Link>
 
             <Link
               to={"/admin/login"}
-              onClick={logout}
+              onClick={() => {
+                setDropdownOpen(false);
+                logout();
+              }}
               className="p-2 block hover:bg-gray-100 cursor-pointer"
             >
               Sign Out

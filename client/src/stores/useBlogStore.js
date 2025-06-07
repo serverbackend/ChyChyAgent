@@ -39,7 +39,6 @@ export const useBlogStore = create((set) => ({
       set({ loading: false });
     }
   },
-
   getAllBlog: async () => {
     set({ loading: true });
     try {
@@ -47,7 +46,21 @@ export const useBlogStore = create((set) => ({
       set({ blogs: res.data.blogs, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch Blogs", loading: false });
-      toast.error(error.response.data.error || "Failed to fetch Blogs");
+      toast.error(
+        blogs.length === 0
+          ? "No Blogs found"
+          : error.response.data.error || "Failed to fetch Blogs"
+      );
+    }
+  },
+  // get by id (single blog)
+  getById: async (blogId) => {
+    try {
+      const res = await axios.get(`/blog/${blogId}`);
+      set({ blog: res.data.blog, loading: false });
+    } catch (error) {
+      set({ error: "Failed to fetch single Blog", loading: false });
+      toast.error(error.response.data.error || "Failed to fetch single Blogs");
     }
   },
   deleteBlog: async (id) => {
@@ -80,6 +93,25 @@ export const useBlogStore = create((set) => ({
       toast.error(
         error.response.data.error || "Failed to toggle featured status"
       );
+    }
+  },
+  editBlog: async (id, blogData = {}) => {
+    try {
+      if (!id || Object.keys(blogData).length === 0) {
+        throw new Error("Invalid blog data provided");
+      }
+
+      const res = await axios.patch(`/blog/edit/${id}`, blogData);
+
+      set((prevState) => ({
+        blog: prevState.blog.map((b) => (b.id === id ? res.data.blog : b)),
+        loading: false,
+      }));
+
+      toast.success(res.data.message || "Blog Edited successfully");
+    } catch (error) {
+      set({ error: "Failed to Edit Blog", loading: false });
+      toast.error(error.response?.data?.error || "Failed to Edit Blog");
     }
   },
 }));

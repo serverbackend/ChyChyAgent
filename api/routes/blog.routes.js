@@ -8,14 +8,22 @@ import {
   getFeaturedBlogs,
   getSingleBlog,
   toggleFeaturedBlog,
+  uploadBlogImage,
 } from "../controllers/blog.controller.js";
 import { adminRoute, protectedRoute } from "../middlewares/auth.middleware.js";
 import { validateBlog } from "../middlewares/validation.middleware.js";
+import upload from "../middlewares/upload.middleware.js";
 
 const router = express.Router();
 
 // Admin routes
-router.post("/", protectedRoute, adminRoute, validateBlog, createBlog);
+router.post(
+  "/",
+  protectedRoute,
+  upload.single("image"),
+  validateBlog,
+  createBlog
+);
 router.patch("/:id", protectedRoute, adminRoute, toggleFeaturedBlog);
 router.patch("/edit/:id", protectedRoute, adminRoute, validateBlog, editBlog);
 router.delete("/delete/:id", protectedRoute, adminRoute, deleteBlog);
@@ -25,5 +33,6 @@ router.get("/", getAllBlogs);
 router.get("/:id", getSingleBlog);
 router.get("/category/:category", getBlogByCategory);
 router.get("/recommendations", getFeaturedBlogs);
+router.post("/upload-image", upload.single("image"), uploadBlogImage);
 
 export default router;

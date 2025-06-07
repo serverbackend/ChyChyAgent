@@ -20,7 +20,6 @@ import {
   yearlyData,
   pieCOLORS,
   pieData,
-  blogs,
 } from "../utils/data";
 import { Link } from "react-router-dom";
 import AnalyticsCard from "../components/AnalyticsCard";
@@ -34,7 +33,7 @@ const Dashboard = ({ darkMode }) => {
   useEffect(() => {
     getAllBlog();
     setBlogs(blogs);
-  }, [blogs]);
+  }, []);
   const data =
     timeFrame === "weekly"
       ? weeklyData

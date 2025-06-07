@@ -18,8 +18,23 @@ import Loading from "../components/Loading";
 import { useUserStore } from "../stores/useUserStore";
 
 const AdminRoutes = () => {
-  const location = useLocation(); // To track the current route
-  const [darkMode, setDarkMode] = useState(false);
+  const location = useLocation();
+
+  // Initialize darkMode from localStorage or default to false
+  const [darkMode, setDarkMode] = useState(() => {
+    const stored = localStorage.getItem("adminDarkMode");
+    return stored ? JSON.parse(stored) : false;
+  });
+
+  // Sync darkMode to localStorage and body class
+  useEffect(() => {
+    localStorage.setItem("adminDarkMode", JSON.stringify(darkMode));
+    if (darkMode) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }, [darkMode]);
 
   const { user, checkAuth, checkingAuth } = useUserStore();
   useEffect(() => {
@@ -36,8 +51,7 @@ const AdminRoutes = () => {
     location.pathname === "/admin/signup";
 
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    document.body.classList.toggle("dark");
+    setDarkMode((prev) => !prev);
   };
   return (
     <>

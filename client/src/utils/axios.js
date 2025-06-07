@@ -6,6 +6,7 @@ const axiosInstance = axios.create({
       ? "http://localhost:5000/api/v1"
       : "/api/v1",
   withCredentials: true, // send cookies to the server
+  headers: { "Content-Type": "application/json" },
 });
 
 export default axiosInstance;

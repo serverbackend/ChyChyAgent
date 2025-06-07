@@ -97,12 +97,12 @@ export const logout = async (req, res, next) => {
     // ✅ Ensure both tokens are removed
     res.clearCookie("accessToken", {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
     });
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
     });
 
