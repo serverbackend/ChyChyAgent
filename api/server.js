@@ -5,6 +5,7 @@ import cors from "cors";
 import { connectDB } from "./libs/db.js";
 import passport from "./libs/passport.js";
 import session from "express-session";
+import path from "path";
 
 // imported Routes
 import authRoute from "./routes/auth.routes.js";
@@ -17,7 +18,7 @@ donenv.config();
 const app = express();
 
 // middlewares
-app.use(express.json());
+app.use(express.json({ limit: "100mb" }));
 app.use(cookieParser());
 app.use(
   cors({
@@ -34,6 +35,16 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+
+// path
+const __dirname = path.resolve();
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/client/dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+  });
+}
 
 // Routes
 app.use("/api/v1/auth", authRoute);

@@ -1,9 +1,7 @@
 class CustomError extends Error {
-  constructor(message, statusCode) {
+  constructor(message, statusCode = 500) {
     super(message);
     this.statusCode = statusCode;
-
-    // Ensure the stack trace is captured
     Error.captureStackTrace(this, this.constructor);
   }
 }
